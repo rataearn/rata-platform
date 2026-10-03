@@ -338,7 +338,7 @@
   <!-- 02.1.2 - AUTH İŞLEMLERİ -->
   <button id="loginBtn" type="button">Giriş Yap</button>
   <button id="registerBtn" type="button">Kayıt Ol</button>
-
+<button id="forgotPasswordBtn" type="button">Şifremi Unuttum</button>
   <!-- 02.1.3 - AUTH MESAJI -->
   <div id="authMessage"></div>
 
@@ -580,6 +580,30 @@ logoutBtn.addEventListener('click', async () => {
   if (error) {
     console.error('RATA çıkış hatası:', error);
   }
+});
+// 90.4.4 - ŞİFREMİ UNUTTUM
+const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
+
+forgotPasswordBtn.addEventListener('click', async () => {
+  const email = authEmail.value.trim();
+
+  authMessage.textContent = '';
+
+  if (!email) {
+    authMessage.textContent = 'E-posta adresini gir.';
+    return;
+  }
+
+  const { error } = await rataSupabase.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.href
+  });
+
+  if (error) {
+    authMessage.textContent = error.message;
+    return;
+  }
+
+  authMessage.textContent = 'Şifre yenileme bağlantısı e-posta adresine gönderildi.';
 });
 </script>
 </body>

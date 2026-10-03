@@ -111,6 +111,154 @@
       background: #ffffff;
       border-color: #9bd8ff;
     }
+      /* 04 - ANA EKRAN / DASHBOARD TASARIMI */
+
+    #dashboardSection {
+      padding: 12px 14px 24px;
+    }
+
+    /* 04.1 - RATA ANA BAŞLIK */
+    .rata-hero {
+      text-align: center;
+      padding: 28px 15px 24px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at top, var(--glow), transparent 60%),
+        var(--panel);
+      box-shadow: 0 0 22px var(--glow);
+    }
+
+    .rata-brand {
+      font-size: 48px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: 4px;
+      color: var(--accent2);
+      text-shadow: 0 0 18px var(--glow);
+    }
+
+    .rata-slogan {
+      margin-top: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--muted);
+    }
+
+    /* 04.2 - USDC BAKİYE KARTI */
+    .balance-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: var(--panel);
+      box-shadow: 0 0 18px var(--glow);
+    }
+
+    .balance-card small {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    #usdcBalance {
+      display: block;
+      font-size: 24px;
+      color: var(--text);
+    }
+
+    #withdrawBtn {
+      border: 0;
+      border-radius: 14px;
+      padding: 14px 16px;
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      color: #101010;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+      box-shadow: 0 0 14px var(--glow);
+    }
+
+    /* 04.3 - VIDEO / OYUN / GÖREV / KEŞFET */
+    .main-actions {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .main-actions button {
+      min-width: 0;
+      min-height: 116px;
+      padding: 12px 5px;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--card);
+      color: var(--text);
+      cursor: pointer;
+      box-shadow: 0 0 12px var(--glow);
+    }
+
+    .main-actions button span {
+      display: block;
+      margin-bottom: 9px;
+      font-size: 28px;
+      color: var(--accent2);
+    }
+
+    .main-actions button strong {
+      display: block;
+      font-size: 13px;
+    }
+
+    .main-actions button small {
+      display: block;
+      margin-top: 6px;
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .main-actions button:active {
+      transform: scale(.96);
+    }
+
+    @media (max-width: 380px) {
+      .rata-brand {
+        font-size: 40px;
+      }
+
+      .balance-card {
+        padding: 14px;
+      }
+
+      #usdcBalance {
+        font-size: 20px;
+      }
+
+      #withdrawBtn {
+        padding: 12px 10px;
+        font-size: 13px;
+      }
+
+      .main-actions {
+        gap: 6px;
+      }
+
+      .main-actions button {
+        min-height: 105px;
+      }
+
+      .main-actions button strong {
+        font-size: 11px;
+      }
+    }
   </style>
 </head>
 
@@ -138,7 +286,56 @@
   <section id="profileSection"></section>
 
   <!-- 04 — ANA EKRAN / DASHBOARD -->
-  <section id="dashboardSection"></section>
+<section id="dashboardSection">
+
+  <!-- 04.1 - RATA ANA BAŞLIK -->
+  <header class="rata-hero">
+    <div class="rata-brand">RATA</div>
+    <div class="rata-slogan">EARN • WATCH • PLAY • EXPLORE</div>
+  </header>
+
+  <!-- 04.2 - USDC BAKİYE KARTI -->
+  <div class="balance-card">
+    <div>
+      <small>USDC Bakiyeniz</small>
+      <strong id="usdcBalance">0.00 USDC</strong>
+    </div>
+
+    <button id="withdrawBtn" type="button">
+      USDC Çek ›
+    </button>
+  </div>
+
+  <!-- 04.3 - ANA KAZANÇ MENÜSÜ -->
+  <div class="main-actions">
+
+    <button type="button" data-target="watchSection">
+      <span>▶</span>
+      <strong>Video İzle</strong>
+      <small>İzle • Kazan</small>
+    </button>
+
+    <button type="button" data-target="playSection">
+      <span>🎮</span>
+      <strong>Oyunlar</strong>
+      <small>Oyna • Kazan</small>
+    </button>
+
+    <button type="button" data-target="earnSection">
+      <span>✓</span>
+      <strong>Görevler</strong>
+      <small>Tamamla • Kazan</small>
+    </button>
+
+    <button type="button" data-target="exploreSection">
+      <span>◆</span>
+      <strong>Keşfet</strong>
+      <small>Daha Fazla</small>
+    </button>
+
+  </div>
+
+</section>
 
   <!-- 05 — EARN / GÖREV & SAĞLAYICILAR -->
   <section id="earnSection"></section>

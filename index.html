@@ -404,6 +404,39 @@
       });
     });
 </script>
+<!-- 90.2 - USDC BAKİYE VERİ BAĞLANTISI -->
+<script>
+async function loadUsdcBalance() {
+  const balanceElement = document.getElementById('usdcBalance');
 
+  const {
+    data: { user },
+    error: userError
+  } = await rataSupabase.auth.getUser();
+
+  if (userError || !user) {
+    balanceElement.textContent = '0.00 USDC';
+    return;
+  }
+
+  const { data, error } = await rataSupabase
+    .from('balances')
+    .select('available_balance')
+    .eq('user_id', user.id)
+    .eq('asset', 'USDC')
+    .maybeSingle();
+
+  if (error) {
+    console.error('RATA bakiye okuma hatası:', error);
+    balanceElement.textContent = '0.00 USDC';
+    return;
+  }
+
+  const balance = Number(data?.available_balance ?? 0);
+  balanceElement.textContent = balance.toFixed(2) + ' USDC';
+}
+
+loadUsdcBalance();
+</script>
 </body>
 </html>

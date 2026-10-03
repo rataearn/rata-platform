@@ -4,9 +4,124 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RATA</title>
+  <!-- 00 - THEME ENGINE / 4 TEMA -->
+  <style>
+    :root {
+      --bg: #090909;
+      --panel: #15110a;
+      --card: #1d1609;
+      --text: #ffffff;
+      --muted: #bdb7aa;
+      --accent: #ffad19;
+      --accent2: #ffd45c;
+      --border: #d98b00;
+      --glow: rgba(255, 173, 25, 0.35);
+    }
+
+    body[data-theme="blue"] {
+      --bg: #020b1d;
+      --panel: #061735;
+      --card: #08224a;
+      --text: #ffffff;
+      --muted: #b8c9e8;
+      --accent: #00a8ff;
+      --accent2: #55d8ff;
+      --border: #008cff;
+      --glow: rgba(0, 168, 255, 0.35);
+    }
+
+    body[data-theme="green"] {
+      --bg: #031008;
+      --panel: #062513;
+      --card: #0a341a;
+      --text: #ffffff;
+      --muted: #b9d8c0;
+      --accent: #37e45d;
+      --accent2: #91ff78;
+      --border: #24bd48;
+      --glow: rgba(55, 228, 93, 0.30);
+    }
+
+    body[data-theme="light"] {
+      --bg: #eef8ff;
+      --panel: #ffffff;
+      --card: #f5fbff;
+      --text: #082b59;
+      --muted: #56708d;
+      --accent: #168cff;
+      --accent2: #55c7ff;
+      --border: #9bd8ff;
+      --glow: rgba(22, 140, 255, 0.18);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, sans-serif;
+      transition: background .25s ease, color .25s ease;
+    }
+
+    #rataApp {
+      width: 100%;
+      max-width: 520px;
+      margin: 0 auto;
+      min-height: 100vh;
+    }
+      /* 00.1 - TEMA SEÇİCİ */
+    .theme-switcher {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 12px 16px 6px;
+    }
+
+    .theme-btn {
+      width: 26px;
+      height: 26px;
+      padding: 0;
+      border: 2px solid rgba(255,255,255,.55);
+      cursor: pointer;
+      box-shadow: 0 0 10px var(--glow);
+    }
+
+    .theme-btn.orange {
+      border-radius: 50%;
+      background: #ff9d00;
+    }
+
+    .theme-btn.blue {
+      border-radius: 6px;
+      background: #079cff;
+      transform: rotate(45deg);
+    }
+
+    .theme-btn.green {
+      background: #32df59;
+      clip-path: polygon(50% 5%, 95% 92%, 5% 92%);
+      border: 0;
+    }
+
+    .theme-btn.light {
+      border-radius: 50%;
+      background: #ffffff;
+      border-color: #9bd8ff;
+    }
+  </style>
 </head>
 
 <body>
+  <!-- 00.2 - 4 TEMA KONTROLÜ -->
+  <div class="theme-switcher" aria-label="RATA tema seçimi">
+    <button class="theme-btn orange" data-theme="gold" aria-label="Altın tema"></button>
+    <button class="theme-btn blue" data-theme="blue" aria-label="Mavi tema"></button>
+    <button class="theme-btn green" data-theme="green" aria-label="Yeşil tema"></button>
+    <button class="theme-btn light" data-theme="light" aria-label="Açık tema"></button>
+  </div>
 
 <!-- =========================================================
      RATA PLATFORM
@@ -48,6 +163,20 @@
 <!-- 90 — JAVASCRIPT BAŞLANGICI -->
 <script>
   // RATA uygulama kodları burada modüler olarak geliştirilecek.
+    // 90.1 - THEME ENGINE / 4 TEMA
+    const themeButtons = document.querySelectorAll('.theme-btn');
+
+    themeButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const theme = button.dataset.theme;
+
+        if (theme === 'gold') {
+          document.body.removeAttribute('data-theme');
+        } else {
+          document.body.setAttribute('data-theme', theme);
+        }
+      });
+    });
 </script>
 
 </body>

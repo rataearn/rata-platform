@@ -506,6 +506,81 @@ rataSupabase.auth.onAuthStateChange(() => {
 });
 
 refreshAuthUI();
+// 90.4 - AUTH ACTIONS / KAYIT - GIRIS - CIKIS
+
+const authNickname = document.getElementById('authNickname');
+const authEmail = document.getElementById('authEmail');
+const authPassword = document.getElementById('authPassword');
+const authMessage = document.getElementById('authMessage');
+
+const loginBtn = document.getElementById('loginBtn');
+const registerBtn = document.getElementById('registerBtn');
+const logoutBtn = document.getElementById('logoutBtn');
+
+// 90.4.1 - KAYIT OL
+registerBtn.addEventListener('click', async () => {
+  const nickname = authNickname.value.trim();
+  const email = authEmail.value.trim();
+  const password = authPassword.value;
+
+  authMessage.textContent = '';
+
+  if (!nickname || !email || !password) {
+    authMessage.textContent = 'Rumuz, e-posta ve şifre gerekli.';
+    return;
+  }
+
+  const { error } = await rataSupabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        nickname: nickname
+      }
+    }
+  });
+
+  if (error) {
+    authMessage.textContent = error.message;
+    return;
+  }
+
+  authMessage.textContent = 'Kayıt başarılı.';
+});
+
+// 90.4.2 - GIRIS YAP
+loginBtn.addEventListener('click', async () => {
+  const email = authEmail.value.trim();
+  const password = authPassword.value;
+
+  authMessage.textContent = '';
+
+  if (!email || !password) {
+    authMessage.textContent = 'E-posta ve şifre gerekli.';
+    return;
+  }
+
+  const { error } = await rataSupabase.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    authMessage.textContent = error.message;
+    return;
+  }
+
+  authMessage.textContent = '';
+});
+
+// 90.4.3 - CIKIS YAP
+logoutBtn.addEventListener('click', async () => {
+  const { error } = await rataSupabase.auth.signOut();
+
+  if (error) {
+    console.error('RATA çıkış hatası:', error);
+  }
+});
 </script>
 </body>
 </html>

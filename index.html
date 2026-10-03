@@ -312,8 +312,36 @@
 <section id="authSection">
   <!-- 02.1 - AUTH DURUMU -->
   <div id="authLoggedOut">
-    <button id="loginBtn" type="button">Giriş Yap</button>
-    <button id="registerBtn" type="button">Kayıt Ol</button>
+
+  <!-- 02.1.1 - KULLANICI BİLGİLERİ -->
+  <input
+    id="authNickname"
+    type="text"
+    placeholder="Rumuz"
+    autocomplete="nickname"
+  >
+
+  <input
+    id="authEmail"
+    type="email"
+    placeholder="E-posta"
+    autocomplete="email"
+  >
+
+  <input
+    id="authPassword"
+    type="password"
+    placeholder="Şifre"
+    autocomplete="current-password"
+  >
+
+  <!-- 02.1.2 - AUTH İŞLEMLERİ -->
+  <button id="loginBtn" type="button">Giriş Yap</button>
+  <button id="registerBtn" type="button">Kayıt Ol</button>
+
+  <!-- 02.1.3 - AUTH MESAJI -->
+  <div id="authMessage"></div>
+
   </div>
 
   <!-- 02.2 - OTURUM AÇIK DURUMU -->

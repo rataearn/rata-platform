@@ -15,6 +15,24 @@
 <script>
   const rataSupabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 </script>
+<!-- 00.3 - SUPABASE CONNECTION CHECK -->
+<script>
+  async function checkSupabaseConnection() {
+    const { error } = await rataSupabase
+      .from('profiles')
+      .select('id')
+      .limit(1);
+
+    if (error) {
+      console.error('RATA Supabase bağlantı hatası:', error);
+      return;
+    }
+
+    console.log('RATA Supabase bağlantısı başarılı');
+  }
+
+  checkSupabaseConnection();
+</script>
   <!-- 00 - THEME ENGINE / 4 TEMA -->
   <style>
     :root {

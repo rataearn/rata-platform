@@ -449,6 +449,35 @@ async function loadUsdcBalance() {
 }
 
 loadUsdcBalance();
+// 90.3 - AUTH ENGINE / OTURUM DURUMU
+
+const authLoggedOut = document.getElementById('authLoggedOut');
+const authLoggedIn = document.getElementById('authLoggedIn');
+const authUserEmail = document.getElementById('authUserEmail');
+
+async function refreshAuthUI() {
+  const {
+    data: { user }
+  } = await rataSupabase.auth.getUser();
+
+  if (user) {
+    authLoggedOut.hidden = true;
+    authLoggedIn.hidden = false;
+    authUserEmail.textContent = user.email || '';
+  } else {
+    authLoggedOut.hidden = false;
+    authLoggedIn.hidden = true;
+    authUserEmail.textContent = '';
+  }
+
+  await loadUsdcBalance();
+}
+
+rataSupabase.auth.onAuthStateChange(() => {
+  refreshAuthUI();
+});
+
+refreshAuthUI();
 </script>
 </body>
 </html>

@@ -309,7 +309,19 @@
 <main id="rataApp">
 
   <!-- 02 — AUTH / KAYIT & OTURUM -->
-  <section id="authSection"></section>
+<section id="authSection">
+  <!-- 02.1 - AUTH DURUMU -->
+  <div id="authLoggedOut">
+    <button id="loginBtn" type="button">Giriş Yap</button>
+    <button id="registerBtn" type="button">Kayıt Ol</button>
+  </div>
+
+  <!-- 02.2 - OTURUM AÇIK DURUMU -->
+  <div id="authLoggedIn" hidden>
+    <span id="authUserEmail"></span>
+    <button id="logoutBtn" type="button">Çıkış Yap</button>
+  </div>
+</section>
 
   <!-- 03 — RATA KULLANICI NUMARATÖRÜ / PROFİL -->
   <section id="profileSection"></section>

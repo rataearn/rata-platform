@@ -504,7 +504,7 @@ async function refreshAuthUI() {
   if (user) {
     authLoggedOut.hidden = true;
     authLoggedIn.hidden = false;
-    authUserEmail.textContent = user.email || '';
+    authUserEmail.textContent = user.user_metadata?.nickname || user.email || '';
   } else {
     authLoggedOut.hidden = false;
     authLoggedIn.hidden = true;

@@ -623,12 +623,24 @@ const resetPasswordBox = document.getElementById('resetPasswordBox');
 const newPassword = document.getElementById('newPassword');
 const updatePasswordBtn = document.getElementById('updatePasswordBtn');
 
+// 90.4.5.1 - ŞİFRE KURTARMA EKRANI
+const showPasswordRecovery = () => {
+  resetPasswordBox.hidden = false;
+  authMessage.textContent = 'Yeni şifrenizi belirleyin.';
+};
+
 rataSupabase.auth.onAuthStateChange((event) => {
   if (event === 'PASSWORD_RECOVERY') {
-    resetPasswordBox.hidden = false;
-    authMessage.textContent = 'Yeni şifrenizi belirleyin.';
+    showPasswordRecovery();
   }
 });
+
+if (
+  window.location.hash.includes('type=recovery') ||
+  window.location.search.includes('type=recovery')
+) {
+  showPasswordRecovery();
+}
 
 updatePasswordBtn.addEventListener('click', async () => {
   const password = newPassword.value;

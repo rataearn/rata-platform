@@ -986,7 +986,20 @@ if (phantomBtn) {
 if (!user) {
   throw new Error('Cüzdanı bağlamak için giriş yapmalısınız.');
 }
+const { error: walletSaveError } = await rataSupabase
+  .from('wallets')
+  .insert({
+    user_id: user.id,
+    wallet_address: address,
+    network: 'solana',
+    wallet_provider: 'phantom',
+    is_primary: true,
+    is_verified: false
+  });
 
+if (walletSaveError) {
+  throw new Error('Cüzdan kaydedilemedi: ' + walletSaveError.message);
+}
     localStorage.setItem(
       'rata_connected_wallet',
       address

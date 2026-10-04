@@ -979,6 +979,13 @@ if (phantomBtn) {
     }
 
     await showConnectedPhantom(address);
+    const {
+  data: { user }
+} = await rataSupabase.auth.getUser();
+
+if (!user) {
+  throw new Error('Cüzdanı bağlamak için giriş yapmalısınız.');
+}
 
     localStorage.setItem(
       'rata_connected_wallet',

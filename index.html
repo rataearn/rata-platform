@@ -752,5 +752,42 @@ updatePasswordBtn.addEventListener('click', async () => {
     });
   }
 </script>
+<!-- 90.7 - PHANTOM CÜZDAN BAĞLANTISI -->
+<script>
+  const phantomBtn = document.querySelector(
+    '[data-wallet-provider="phantom"]'
+  );
+
+  if (phantomBtn) {
+    phantomBtn.addEventListener('click', async () => {
+      try {
+        const provider = window.phantom?.solana;
+
+        if (!provider?.isPhantom) {
+          alert('Phantom cüzdanı bulunamadı.');
+          return;
+        }
+
+        const response = await provider.connect();
+        const walletAddress = response.publicKey.toString();
+
+        document.getElementById('walletMessage').textContent =
+          'Phantom cüzdanı bağlandı.';
+
+        document.getElementById('connectedWalletAddress').textContent =
+          walletAddress;
+
+        document.getElementById('connectedWalletInfo').hidden = false;
+        document.getElementById('connectWalletBtn').hidden = true;
+        document.getElementById('disconnectWalletBtn').hidden = false;
+        document.getElementById('walletProviderSelector').hidden = true;
+
+      } catch (error) {
+        console.error('Phantom bağlantı hatası:', error);
+        alert('Phantom bağlantısı tamamlanamadı.');
+      }
+    });
+  }
+</script>
 </body>
 </html>

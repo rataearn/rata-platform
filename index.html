@@ -1037,6 +1037,39 @@ const savedPhantomWallet = localStorage.getItem('rata_connected_wallet');
 if (savedPhantomWallet) {
   showConnectedPhantom(savedPhantomWallet);
 }
+// 90.7.1 - PHANTOM CÜZDAN AYIRMA
+const disconnectWalletBtn = document.getElementById('disconnectWalletBtn');
+
+if (disconnectWalletBtn) {
+  disconnectWalletBtn.addEventListener('click', async () => {
+    try {
+      const provider =
+        window.phantom?.solana ||
+        (window.solana?.isPhantom ? window.solana : null);
+
+      if (provider?.isPhantom && provider.isConnected) {
+        await provider.disconnect();
+      }
+    } catch (error) {
+      console.error('Phantom ayırma hatası:', error);
+    }
+
+    localStorage.removeItem('rata_connected_wallet');
+    localStorage.removeItem('rata_phantom_dapp_secret_key');
+
+    const walletMessage = document.getElementById('walletMessage');
+    const connectedWalletAddress = document.getElementById('connectedWalletAddress');
+    const connectWalletBtn = document.getElementById('connectWalletBtn');
+    const walletProviderSelector = document.getElementById('walletProviderSelector');
+
+    walletMessage.textContent = 'Henüz bağlı bir cüzdan yok.';
+    connectedWalletAddress.textContent = '—';
+
+    disconnectWalletBtn.hidden = true;
+    connectWalletBtn.hidden = false;
+    walletProviderSelector.hidden = true;
+  });
+}
 </script>
 </body>
 </html>

@@ -828,50 +828,189 @@ updatePasswordBtn.addEventListener('click', async () => {
 </script>
 <!-- 90.7 - PHANTOM CÜZDAN BAĞLANTISI -->
 <script>
-  const phantomBtn = document.querySelector(
-    '[data-wallet-provider="phantom"]'
-  );
+const phantomBtn = document.querySelector(
+  '[data-wallet-provider="phantom"]'
+);
 
-  if (phantomBtn) {
-    phantomBtn.addEventListener('click', async () => {
-      try {
-        const provider = window.phantom?.solana;
+async function showConnectedPhantom(address) {
+  const walletMessage = document.getElementById('walletMessage');
+  const connectedWalletAddress =
+    document.getElementById('connectedWalletAddress');
+  const connectedWallet =
+    document.getElementById('connectedWallet');
+  const connectWalletBtn =
+    document.getElementById('connectWalletBtn');
+  const disconnectWalletBtn =
+    document.getElementById('disconnectWalletBtn');
+  const walletProviderSelector =
+    document.getElementById('walletProviderSelector');
 
-        // Phantom tarayıcıya bağlıysa doğrudan bağlan
-        if (provider?.isPhantom) {
-          const response = await provider.connect();
-          const walletAddress = response.publicKey.toString();
+  if (walletMessage) {
+    walletMessage.textContent = 'Phantom cüzdanı bağlandı.';
+  }
 
-          document.getElementById('walletMessage').textContent =
-            'Phantom cüzdanı bağlandı.';
+  if (connectedWalletAddress) {
+    connectedWalletAddress.textContent = address;
+  }
 
-          document.getElementById('connectedWalletAddress').textContent =
-            walletAddress;
+  if (connectedWallet) {
+    connectedWallet.hidden = false;
+  }
 
-          document.getElementById('connectedWalletInfo').hidden = false;
-          document.getElementById('connectWalletBtn').hidden = true;
-          document.getElementById('disconnectWalletBtn').hidden = false;
-          document.getElementById('walletProviderSelector').hidden = true;
+  if (connectWalletBtn) {
+    connectWalletBtn.hidden = true;
+  }
 
-          return;
+  if (disconnectWalletBtn) {
+    disconnectWalletBtn.hidden = false;
+  }
+
+  if (walletProviderSelector) {
+    walletProviderSelector.hidden = true;
+  }
+}
+
+if (phantomBtn) {
+  phantomBtn.addEventListener('click', async () => {
+    try {
+      const provider =
+        window.phantom?.solana ||
+        (window.solana?.isPhantom ? window.solana : null);
+
+      // Phantom tarayıcısında / eklenti mevcutsa doğrudan bağlan.
+      if (provider?.isPhantom) {
+        const response = await provider.connect();
+
+        const address =
+          response?.publicKey?.toString() ||
+          provider.publicKey?.toString() ||
+          '';
+
+        if (!address) {
+          throw new Error('Phantom cüzdan adresi alınamadı.');
         }
 
-        // Mobil tarayıcıdaysa RATA sayfasını Phantom içinde aç
-        const currentUrl = window.location.href;
-        const phantomUrl =
-          'https://phantom.app/ul/browse/' +
-          encodeURIComponent(currentUrl) +
-          '?ref=' +
-          encodeURIComponent(window.location.origin);
-
-        window.location.href = phantomUrl;
-
-      } catch (error) {
-        console.error('Phantom bağlantı hatası:', error);
-        alert('Phantom bağlantısı tamamlanamadı.');
+        await showConnectedPhantom(address);
+        return;
       }
-    });
+
+      // Mobil normal tarayıcı -> Phantom Connect deeplink.
+      if (!window.nacl) {
+        throw new Error('Phantom bağlantı sistemi yüklenemedi.');
+      }
+
+      const dappKeyPair = nacl.box.keyPair();
+      const dappPublicKey = base58Encode(dappKeyPair.publicKey);
+
+      localStorage.setItem(
+        'rata_phantom_dapp_secret_key',
+        Array.from(dappKeyPair.secretKey).join(',')
+      );
+
+      const rataUrl =
+        window.location.origin + window.location.pathname;
+
+      const params = new URLSearchParams({
+        app_url: rataUrl,
+        dapp_encryption_public_key: dappPublicKey,
+        redirect_link: rataUrl
+      });
+
+      window.location.href =
+        'https://phantom.app/ul/v1/connect?' +
+        params.toString();
+
+    } catch (error) {
+      console.error('Phantom bağlantı hatası:', error);
+      alert(
+        'Phantom bağlantısı tamamlanamadı: ' +
+        (error?.message || error)
+      );
+    }
+  });
+}
+
+// Phantom onayından RATA'ya dönüldüğünde cevabı çöz.
+(async () => {
+  const params = new URLSearchParams(window.location.search);
+
+  const phantomEncryptionPublicKey =
+    params.get('phantom_encryption_public_key');
+  const nonce = params.get('nonce');
+  const data = params.get('data');
+
+  if (!phantomEncryptionPublicKey || !nonce || !data) {
+    return;
   }
+
+  try {
+    const storedSecretKey =
+      localStorage.getItem('rata_phantom_dapp_secret_key');
+
+    if (!storedSecretKey) {
+      throw new Error(
+        'Phantom geçici bağlantı anahtarı bulunamadı.'
+      );
+    }
+
+    const dappSecretKey = new Uint8Array(
+      storedSecretKey.split(',').map(Number)
+    );
+
+    const decrypted = nacl.box.open(
+      base58Decode(data),
+      base58Decode(nonce),
+      base58Decode(phantomEncryptionPublicKey),
+      dappSecretKey
+    );
+
+    if (!decrypted) {
+      throw new Error('Phantom bağlantı yanıtı çözülemedi.');
+    }
+
+    const payload = JSON.parse(
+      new TextDecoder().decode(decrypted)
+    );
+
+    const address = payload?.public_key || '';
+
+    if (!address) {
+      throw new Error('Phantom cüzdan adresi alınamadı.');
+    }
+
+    await showConnectedPhantom(address);
+
+    localStorage.setItem(
+      'rata_connected_wallet',
+      address
+    );
+
+    localStorage.removeItem(
+      'rata_phantom_dapp_secret_key'
+    );
+
+    window.history.replaceState(
+      {},
+      '',
+      window.location.pathname
+    );
+
+  } catch (error) {
+    console.error(
+      'Phantom deeplink bağlantı hatası:',
+      error
+    );
+
+    localStorage.removeItem(
+      'rata_phantom_dapp_secret_key'
+    );
+
+    alert(
+      'Phantom bağlantısı tamamlanamadı: ' +
+      (error?.message || error)
+    );
+  }
+})();
 </script>
 </body>
 </html>

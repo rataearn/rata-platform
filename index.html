@@ -736,6 +736,20 @@ updatePasswordBtn.addEventListener('click', async () => {
       });
     });
   }
+<!-- 90.6 - CÜZDAN SAĞLAYICI PANELİ AÇMA -->
+<script>
+  const connectWalletBtn = document.getElementById('connectWalletBtn');
+  const walletProviderSelector = document.getElementById('walletProviderSelector');
+
+  if (connectWalletBtn && walletProviderSelector) {
+    connectWalletBtn.addEventListener('click', () => {
+      walletProviderSelector.hidden = false;
+      walletProviderSelector.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    });
+  }
 </script>
 </body>
 </html>

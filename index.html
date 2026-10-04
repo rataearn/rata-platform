@@ -514,8 +514,9 @@ async function refreshAuthUI() {
   await loadUsdcBalance();
 }
 
-rataSupabase.auth.onAuthStateChange(() => {
-  refreshAuthUI();
+rataSupabase.auth.onAuthStateChange((event) => {
+    if (event === 'PASSWORD_RECOVERY') return;
+    refreshAuthUI();
 });
 
 refreshAuthUI();

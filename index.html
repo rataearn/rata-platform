@@ -514,12 +514,29 @@ async function refreshAuthUI() {
   await loadUsdcBalance();
 }
 
+// 90.3.1 - RECOVERY MODUNDA NORMAL AUTH EKRANINI KİLİTLE
+let isPasswordRecovery = false;
+
 rataSupabase.auth.onAuthStateChange((event) => {
-    if (event === 'PASSWORD_RECOVERY') return;
-    refreshAuthUI();
+  if (event === 'PASSWORD_RECOVERY') {
+    isPasswordRecovery = true;
+    return;
+  }
+
+  if (isPasswordRecovery) return;
+
+  refreshAuthUI();
 });
 
-refreshAuthUI();
+// Recovery linki ile açıldıysa normal giriş ekranını çalıştırma
+if (
+  window.location.hash.includes('type=recovery') ||
+  window.location.search.includes('type=recovery')
+) {
+  isPasswordRecovery = true;
+} else {
+  refreshAuthUI();
+}
 // 90.4 - AUTH ACTIONS / KAYIT - GIRIS - CIKIS
 
 const authNickname = document.getElementById('authNickname');

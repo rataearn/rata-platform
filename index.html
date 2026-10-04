@@ -1011,6 +1011,12 @@ if (phantomBtn) {
     );
   }
 })();
+// Sayfa açıldığında daha önce bağlanan Phantom cüzdanını geri yükle.
+const savedPhantomWallet = localStorage.getItem('rata_connected_wallet');
+
+if (savedPhantomWallet) {
+  showConnectedPhantom(savedPhantomWallet);
+}
 </script>
 </body>
 </html>

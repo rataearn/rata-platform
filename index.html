@@ -988,13 +988,15 @@ if (!user) {
 }
 const { error: walletSaveError } = await rataSupabase
   .from('wallets')
-  .insert({
+  .upsert({
     user_id: user.id,
     wallet_address: address,
     network: 'solana',
     wallet_provider: 'phantom',
     is_primary: true,
     is_verified: false
+  }, {
+    onConflict: 'wallet_address,network'
   });
 
 if (walletSaveError) {

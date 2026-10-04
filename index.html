@@ -763,24 +763,34 @@ updatePasswordBtn.addEventListener('click', async () => {
       try {
         const provider = window.phantom?.solana;
 
-        if (!provider?.isPhantom) {
-          alert('Phantom cüzdanı bulunamadı.');
+        // Phantom tarayıcıya bağlıysa doğrudan bağlan
+        if (provider?.isPhantom) {
+          const response = await provider.connect();
+          const walletAddress = response.publicKey.toString();
+
+          document.getElementById('walletMessage').textContent =
+            'Phantom cüzdanı bağlandı.';
+
+          document.getElementById('connectedWalletAddress').textContent =
+            walletAddress;
+
+          document.getElementById('connectedWalletInfo').hidden = false;
+          document.getElementById('connectWalletBtn').hidden = true;
+          document.getElementById('disconnectWalletBtn').hidden = false;
+          document.getElementById('walletProviderSelector').hidden = true;
+
           return;
         }
 
-        const response = await provider.connect();
-        const walletAddress = response.publicKey.toString();
+        // Mobil tarayıcıdaysa RATA sayfasını Phantom içinde aç
+        const currentUrl = window.location.href;
+        const phantomUrl =
+          'https://phantom.app/ul/browse/' +
+          encodeURIComponent(currentUrl) +
+          '?ref=' +
+          encodeURIComponent(window.location.origin);
 
-        document.getElementById('walletMessage').textContent =
-          'Phantom cüzdanı bağlandı.';
-
-        document.getElementById('connectedWalletAddress').textContent =
-          walletAddress;
-
-        document.getElementById('connectedWalletInfo').hidden = false;
-        document.getElementById('connectWalletBtn').hidden = true;
-        document.getElementById('disconnectWalletBtn').hidden = false;
-        document.getElementById('walletProviderSelector').hidden = true;
+        window.location.href = phantomUrl;
 
       } catch (error) {
         console.error('Phantom bağlantı hatası:', error);

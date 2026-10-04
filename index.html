@@ -432,7 +432,32 @@
   <section id="exploreSection"></section>
 
   <!-- 09 — USDC BAKİYE & ÇEKİM -->
-  <section id="walletSection"></section>
+<section id="walletSection" hidden>
+
+  <!-- 09.1 - CÜZDAN DURUMU -->
+  <div id="walletStatus">
+    <h2>Cüzdan</h2>
+    <p id="walletMessage">Henüz bağlı bir cüzdan yok.</p>
+  </div>
+
+  <!-- 09.2 - CÜZDAN İŞLEMLERİ -->
+  <div id="walletActions">
+    <button id="connectWalletBtn" type="button">
+      Cüzdan Bağla
+    </button>
+
+    <button id="disconnectWalletBtn" type="button" hidden>
+      Cüzdanı Ayır
+    </button>
+  </div>
+
+  <!-- 09.3 - BAĞLI CÜZDAN BİLGİSİ -->
+  <div id="connectedWalletInfo" hidden>
+    <small>Bağlı Solana Cüzdanı</small>
+    <strong id="connectedWalletAddress">—</strong>
+  </div>
+
+</section>
 
   <!-- 10 — CANLI AKTİVİTE -->
   <section id="liveActivitySection"></section>

@@ -846,6 +846,64 @@ updatePasswordBtn.addEventListener('click', async () => {
 </script>
 <!-- 90.7 - PHANTOM CÜZDAN BAĞLANTISI -->
 <script>
+// 90.7.0 - PHANTOM CÜZDAN SAHİPLİĞİ DOĞRULAMA
+async function verifyPhantomWalletOwnership(address, provider) {
+  const { data: challengeData, error: challengeError } =
+    await rataSupabase.rpc('create_wallet_verification_challenge', {
+      p_wallet_address: address
+    });
+
+  if (challengeError) {
+    throw new Error(
+      'Cüzdan doğrulama isteği oluşturulamadı: ' +
+      challengeError.message
+    );
+  }
+
+  const challenge = Array.isArray(challengeData)
+    ? challengeData[0]
+    : challengeData;
+
+  if (!challenge?.id || !challenge?.nonce) {
+    throw new Error('Cüzdan doğrulama isteği alınamadı.');
+  }
+
+  const encodedMessage = new TextEncoder().encode(challenge.nonce);
+
+  const signedMessage = await provider.signMessage(
+    encodedMessage,
+    'utf8'
+  );
+
+  const signature = base58Encode(signedMessage.signature);
+
+  const { data, error } = await rataSupabase.functions.invoke(
+    'verify-wallet-signature',
+    {
+      body: {
+        challenge_id: challenge.id,
+        signature: signature
+      }
+    }
+  );
+
+  if (error) {
+    throw new Error(
+      data?.error ||
+      error.message ||
+      'Cüzdan imzası doğrulanamadı.'
+    );
+  }
+
+  if (!data?.verified) {
+    throw new Error(
+      data?.error ||
+      'Cüzdan sahipliği doğrulanamadı.'
+    );
+  }
+
+  return data;
+}
 const phantomBtn = document.querySelector(
   '[data-wallet-provider="phantom"]'
 );
@@ -907,7 +965,7 @@ if (phantomBtn) {
         if (!address) {
           throw new Error('Phantom cüzdan adresi alınamadı.');
         }
-
+await verifyPhantomWalletOwnership(address, provider);
         await showConnectedPhantom(address);
         return;
       }

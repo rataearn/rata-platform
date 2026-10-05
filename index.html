@@ -904,6 +904,45 @@ async function verifyPhantomWalletOwnership(address, provider) {
 
   return data;
 }
+// 90.7.0.1 - PHANTOM MOBİL İMZA DEEPLINK HAZIRLIĞI
+async function startPhantomMobileSign(address) {
+  const { data: challengeData, error: challengeError } =
+    await rataSupabase.rpc('create_wallet_verification_challenge', {
+      p_wallet_address: address
+    });
+
+  if (challengeError) {
+    throw new Error(
+      'Cüzdan doğrulama isteği oluşturulamadı: ' +
+      challengeError.message
+    );
+  }
+
+  const challenge = Array.isArray(challengeData)
+    ? challengeData[0]
+    : challengeData;
+
+  if (!challenge?.id || !challenge?.nonce) {
+    throw new Error('Cüzdan doğrulama isteği alınamadı.');
+  }
+
+  localStorage.setItem(
+    'rata_phantom_verification_challenge_id',
+    challenge.id
+  );
+
+  localStorage.setItem(
+    'rata_phantom_verification_nonce',
+    challenge.nonce
+  );
+
+  localStorage.setItem(
+    'rata_phantom_verification_address',
+    address
+  );
+
+  return challenge;
+}
 const phantomBtn = document.querySelector(
   '[data-wallet-provider="phantom"]'
 );

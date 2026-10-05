@@ -1091,5 +1091,69 @@ if (disconnectWalletBtn) {
   });
 }
 </script>
+<!-- 90.8 - USDC ÇEKİM TALEBİ -->
+<script>
+const submitWithdrawBtn = document.getElementById('submitWithdrawBtn');
+const withdrawAmount = document.getElementById('withdrawAmount');
+const withdrawMessage = document.getElementById('withdrawMessage');
+
+if (submitWithdrawBtn) {
+  submitWithdrawBtn.addEventListener('click', async () => {
+    withdrawMessage.textContent = '';
+
+    const amount = Number(withdrawAmount.value);
+
+    if (!Number.isFinite(amount) || amount <= 0) {
+      withdrawMessage.textContent = 'Geçerli bir USDC miktarı girin.';
+      return;
+    }
+
+    const {
+      data: { user },
+      error: userError
+    } = await rataSupabase.auth.getUser();
+
+    if (userError || !user) {
+      withdrawMessage.textContent =
+        'Çekim yapmak için giriş yapmalısınız.';
+      return;
+    }
+
+    submitWithdrawBtn.disabled = true;
+    withdrawMessage.textContent = 'Çekim talebi oluşturuluyor...';
+
+    try {
+      const { data, error } = await rataSupabase.rpc(
+        'request_usdc_withdrawal',
+        {
+          p_user_id: user.id,
+          p_amount: amount
+        }
+      );
+
+      if (error) {
+        throw error;
+      }
+
+      withdrawMessage.textContent =
+        'Çekim talebiniz başarıyla oluşturuldu.';
+
+      withdrawAmount.value = '';
+
+      await loadUsdcBalance();
+
+      console.log('RATA çekim talebi:', data);
+
+    } catch (error) {
+      console.error('RATA çekim talebi hatası:', error);
+
+      withdrawMessage.textContent =
+        error?.message || 'Çekim talebi oluşturulamadı.';
+    } finally {
+      submitWithdrawBtn.disabled = false;
+    }
+  });
+}
+</script>
 </body>
 </html>

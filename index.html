@@ -862,7 +862,8 @@ async function verifyPhantomWalletOwnership(address, provider) {
 
   const challenge = Array.isArray(challengeData)
     ? challengeData[0]
-    : challengeData;
+ : challengeData;
+    alert('CHALLENGE DATA: ' + JSON.stringify(challengeData));
 
   if (!challenge?.challenge_id || !challenge?.nonce) {
     throw new Error('Cüzdan doğrulama isteği alınamadı.');

@@ -864,7 +864,7 @@ async function verifyPhantomWalletOwnership(address, provider) {
     ? challengeData[0]
     : challengeData;
 
-  if (!challenge?.id || !challenge?.nonce) {
+  if (!challenge?.challenge_id || !challenge?.nonce) {
     throw new Error('Cüzdan doğrulama isteği alınamadı.');
   }
 
@@ -881,7 +881,7 @@ async function verifyPhantomWalletOwnership(address, provider) {
     'verify-wallet-signature',
     {
       body: {
-        challenge_id: challenge.id,
+        challenge_id: challenge.challenge_id,
         signature: signature
       }
     }
@@ -922,13 +922,13 @@ async function startPhantomMobileSign(address) {
     ? challengeData[0]
     : challengeData;
 
-  if (!challenge?.id || !challenge?.nonce) {
+  if (!challenge?.challenge_id || !challenge?.nonce) {
     throw new Error('Cüzdan doğrulama isteği alınamadı.');
   }
 
   localStorage.setItem(
     'rata_phantom_verification_challenge_id',
-    challenge.id
+    challenge.challenge_id
   );
 
   localStorage.setItem(

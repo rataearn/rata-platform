@@ -1053,7 +1053,11 @@ await verifyPhantomWalletOwnership(address, provider);
     if (!address) {
       throw new Error('Phantom cüzdan adresi alınamadı.');
     }
+const mobileProvider = window.phantom?.solana;
 
+if (mobileProvider?.isPhantom && mobileProvider?.signMessage) {
+  await verifyPhantomWalletOwnership(address, mobileProvider);
+}
     await showConnectedPhantom(address);
     const {
   data: { user }

@@ -1121,6 +1121,11 @@ await verifyPhantomWalletOwnership(address, provider);
   }
 
   if (!phantomEncryptionPublicKey || !nonce || !data) {
+    alert(
+        'PHANTOM RETURN: key=' + !!phantomEncryptionPublicKey +
+        ' nonce=' + !!nonce +
+        ' data=' + !!data
+    );
     return;
   }
 

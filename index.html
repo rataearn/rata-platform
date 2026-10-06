@@ -1124,14 +1124,14 @@ alert(
   );
   }
 
-  if (!phantomEncryptionPublicKey || !nonce || !data) {
-    alert(
-        'PHANTOM RETURN: key=' + !!phantomEncryptionPublicKey +
-        ' nonce=' + !!nonce +
-        ' data=' + !!data
-    );
-    return;
-  }
+if (!nonce || !data) {
+  return;
+}
+
+if (!phantomEncryptionPublicKey) {
+  console.error('Phantom encryption public key bulunamadı.');
+  return;
+}
 
   try {
     const storedSecretKey =

@@ -1153,7 +1153,8 @@ await verifyPhantomWalletOwnership(address, provider);
     );
   // 90.7.0.2 - PHANTOM MOBİL İMZA DÖNÜŞÜ
 if (
-  localStorage.getItem('rata_phantom_sign_pending') === '1'
+  localStorage.getItem('rata_phantom_sign_pending') === '1' &&
+  payload?.signature
 ) {
   const challengeId = localStorage.getItem(
     'rata_phantom_verification_challenge_id'

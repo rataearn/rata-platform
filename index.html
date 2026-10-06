@@ -1390,14 +1390,52 @@ if (submitWithdrawBtn) {
         throw error;
       }
 
-      withdrawMessage.textContent =
-        'Çekim talebiniz başarıyla oluşturuldu.';
+  const withdrawalId = Array.isArray(data) ? data[0] : data;
 
-      withdrawAmount.value = '';
+if (!withdrawalId) {
+  throw new Error('Çekim numarası alınamadı.');
+}
 
-      await loadUsdcBalance();
+withdrawMessage.textContent =
+  'USDC çekiminiz işleniyor...';
 
-      console.log('RATA çekim talebi:', data);
+const {
+  data: processData,
+  error: processError
+} = await rataSupabase.functions.invoke(
+  'process-usdc-withdrawal',
+  {
+    body: {
+      withdrawal_id: withdrawalId
+    }
+  }
+);
+
+if (processError || !processData?.ok) {
+  console.error(
+    'RATA USDC gönderim hatası:',
+    processError,
+    processData
+  );
+
+  throw new Error(
+    processData?.error ||
+    processError?.message ||
+    'USDC gönderimi tamamlanamadı.'
+  );
+}
+
+withdrawMessage.textContent =
+  'USDC çekiminiz başarıyla gönderildi.';
+
+withdrawAmount.value = '';
+
+await loadUsdcBalance();
+
+console.log(
+  'RATA USDC çekimi tamamlandı:',
+  processData
+);
 
     } catch (error) {
       console.error('RATA çekim talebi hatası:', error);

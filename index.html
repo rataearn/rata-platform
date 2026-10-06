@@ -941,6 +941,63 @@ async function startPhantomMobileSign(address) {
     'rata_phantom_verification_address',
     address
   );
+const session = localStorage.getItem(
+  'rata_phantom_session'
+);
+
+const phantomPublicKey = localStorage.getItem(
+  'rata_phantom_encryption_public_key'
+);
+
+const storedSecretKey = localStorage.getItem(
+  'rata_phantom_dapp_secret_key'
+);
+
+if (!session || !phantomPublicKey || !storedSecretKey) {
+  throw new Error(
+    'Phantom mobil imza bilgileri eksik.'
+  );
+}
+
+const dappSecretKey = new Uint8Array(
+  storedSecretKey.split(',').map(Number)
+);
+
+const signPayload = {
+  session: session,
+  message: base58Encode(
+    new TextEncoder().encode(challenge.nonce)
+  )
+};
+
+const signNonce = nacl.randomBytes(24);
+
+const encryptedPayload = nacl.box(
+  new TextEncoder().encode(JSON.stringify(signPayload)),
+  signNonce,
+  base58Decode(phantomPublicKey),
+  dappSecretKey
+);
+
+const rataUrl =
+  window.location.origin + window.location.pathname;
+
+const signParams = new URLSearchParams({
+  dapp_encryption_public_key:
+    base58Encode(nacl.box.keyPair.fromSecretKey(dappSecretKey).publicKey),
+  nonce: base58Encode(signNonce),
+  redirect_link: rataUrl,
+  payload: base58Encode(encryptedPayload)
+});
+
+localStorage.setItem(
+  'rata_phantom_sign_pending',
+  '1'
+);
+
+window.location.href =
+  'https://phantom.app/ul/v1/signMessage?' +
+  signParams.toString();
 
   return challenge;
 }

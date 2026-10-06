@@ -1264,7 +1264,8 @@ if (walletSaveError) {
       address
     );
 
-
+await startPhantomMobileSign(address);
+return;
     window.history.replaceState(
       {},
       '',

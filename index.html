@@ -1087,7 +1087,12 @@ await verifyPhantomWalletOwnership(address, provider);
     const payload = JSON.parse(
       new TextDecoder().decode(decrypted)
     );
-
+if (payload?.session) {
+  localStorage.setItem(
+    'rata_phantom_session',
+    payload.session
+  );
+}
     const address = payload?.public_key || '';
 
     if (!address) {

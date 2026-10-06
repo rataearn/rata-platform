@@ -1046,6 +1046,7 @@ async function showConnectedPhantom(address) {
 if (phantomBtn) {
   phantomBtn.addEventListener('click', async () => {
     try {
+  localStorage.removeItem('rata_phantom_sign_pending');
       const provider =
         window.phantom?.solana ||
         (window.solana?.isPhantom ? window.solana : null);

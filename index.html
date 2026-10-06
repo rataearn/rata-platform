@@ -1055,6 +1055,13 @@ await verifyPhantomWalletOwnership(address, provider);
   const nonce = params.get('nonce');
   const data = params.get('data');
 
+  if (phantomEncryptionPublicKey) {
+  localStorage.setItem(
+    'rata_phantom_encryption_public_key',
+    phantomEncryptionPublicKey
+  );
+  }
+
   if (!phantomEncryptionPublicKey || !nonce || !data) {
     return;
   }

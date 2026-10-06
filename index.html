@@ -1080,7 +1080,10 @@ await verifyPhantomWalletOwnership(address, provider);
         'rata_phantom_dapp_secret_key',
         Array.from(dappKeyPair.secretKey).join(',')
       );
-
+alert(
+  'SECRET SAVED: ' +
+  !!localStorage.getItem('rata_phantom_dapp_secret_key')
+);
       const rataUrl =
         window.location.origin + window.location.pathname;
 

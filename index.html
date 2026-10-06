@@ -1151,6 +1151,74 @@ await verifyPhantomWalletOwnership(address, provider);
     const payload = JSON.parse(
       new TextDecoder().decode(decrypted)
     );
+  // 90.7.0.2 - PHANTOM MOBİL İMZA DÖNÜŞÜ
+if (
+  localStorage.getItem('rata_phantom_sign_pending') === '1'
+) {
+  const challengeId = localStorage.getItem(
+    'rata_phantom_verification_challenge_id'
+  );
+
+  const signature = payload?.signature || '';
+
+  if (!challengeId || !signature) {
+    throw new Error(
+      'Phantom imza doğrulama bilgileri eksik.'
+    );
+  }
+
+  const { data: verifyData, error: verifyError } =
+    await rataSupabase.functions.invoke(
+      'verify-wallet-signature',
+      {
+        body: {
+          challenge_id: challengeId,
+          signature: signature
+        }
+      }
+    );
+
+  if (verifyError) {
+    throw new Error(
+      verifyData?.error ||
+      verifyError.message ||
+      'Cüzdan imzası doğrulanamadı.'
+    );
+  }
+
+  if (!verifyData?.verified) {
+    throw new Error(
+      verifyData?.error ||
+      'Cüzdan sahipliği doğrulanamadı.'
+    );
+  }
+
+  localStorage.removeItem(
+    'rata_phantom_sign_pending'
+  );
+
+  localStorage.removeItem(
+    'rata_phantom_verification_challenge_id'
+  );
+
+  localStorage.removeItem(
+    'rata_phantom_verification_nonce'
+  );
+
+  localStorage.removeItem(
+    'rata_phantom_verification_address'
+  );
+
+  window.history.replaceState(
+    {},
+    '',
+    window.location.pathname
+  );
+
+  alert('Phantom cüzdan sahipliği doğrulandı.');
+
+  return;
+}
 if (payload?.session) {
   localStorage.setItem(
     'rata_phantom_session',

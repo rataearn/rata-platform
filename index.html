@@ -1109,7 +1109,8 @@ await verifyPhantomWalletOwnership(address, provider);
   const params = new URLSearchParams(window.location.search);
 
   const phantomEncryptionPublicKey =
-    params.get('phantom_encryption_public_key');
+  params.get('phantom_encryption_public_key') ||
+  localStorage.getItem('rata_phantom_encryption_public_key');
   const nonce = params.get('nonce');
   const data = params.get('data');
 

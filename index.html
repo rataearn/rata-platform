@@ -1178,16 +1178,27 @@ if (
     );
   }
 
-  const { data: verifyData, error: verifyError } =
-    await rataSupabase.functions.invoke(
-      'verify-wallet-signature',
-      {
-        body: {
-          challenge_id: challengeId,
-          signature: signature
-        }
+const {
+  data: { session: authSession }
+} = await rataSupabase.auth.getSession();
+
+if (!authSession?.access_token) {
+  throw new Error('Oturum anahtarı alınamadı.');
+}
+
+const { data: verifyData, error: verifyError } =
+  await rataSupabase.functions.invoke(
+    'verify-wallet-signature',
+    {
+      headers: {
+        Authorization: `Bearer ${authSession.access_token}`
+      },
+      body: {
+        challenge_id: challengeId,
+        signature: signature
       }
-    );
+    }
+  );
 
   if (verifyError) {
     throw new Error(

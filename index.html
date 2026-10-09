@@ -1267,19 +1267,34 @@ if (!user) {
 }
 const { error: walletSaveError } = await rataSupabase
   .from('wallets')
-  .upsert({
+  .insert({
     user_id: user.id,
     wallet_address: address,
     network: 'solana',
-    wallet_provider: 'phantom',
-    is_primary: true,
-    is_verified: false
-  }, {
-    onConflict: 'wallet_address,network'
+    wallet_provider: 'phantom'
   });
 
 if (walletSaveError) {
-  throw new Error('Cüzdan kaydedilemedi: ' + walletSaveError.message);
+  if (walletSaveError.code !== '23505') {
+    throw new Error(
+      'Cüzdan kaydedilemedi: ' + walletSaveError.message
+    );
+  }
+
+  const { data: existingWallet, error: lookupError } =
+    await rataSupabase
+      .from('wallets')
+      .select('user_id')
+      .eq('wallet_address', address)
+      .eq('network', 'solana')
+      .maybeSingle();
+
+  if (lookupError || !existingWallet ||
+      existingWallet.user_id !== user.id) {
+    throw new Error(
+      'Bu cüzdan başka bir hesaba kayıtlı veya kayıt doğrulanamadı.'
+    );
+  }
 }
     localStorage.setItem(
       'rata_connected_wallet',
